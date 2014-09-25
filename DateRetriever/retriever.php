@@ -34,11 +34,54 @@ final class RetrieverCodeForces extends Retriever
 		$dataSplit[0] = date('m', strtotime($dataSplit[0]));
 		$data = shape('dia' => $dataSplit[1], 'mes' => $dataSplit[0], 'ano' => $dataSplit[2]);
 		$horario = shape('hora' => $dataSplit[3], 'minuto' => $dataSplit[4]); 
-		var_dump($data);
-		var_dump($data);
 		return parent::convertTime($data, $horario, "Europe/Moscow");
 	}
 }
 
-$a = new RetrieverCodeForces();
+final class RetrieverTopCoder extends Retriever
+{
+	protected function getDateAux(string $URL, bool $primeira) : (MinhaData, MeuHorario)
+	{
+		$html = file_get_html($URL);
+		var_dump($URL);
+		$srmDays = $html->find('table[class=calendar] div[class]');
+		foreach($srmDays as $day)
+		{
+			$dataSplit =  preg_split('/\s\s+/', $day->parent()->plaintext);
+			date_default_timezone_set('America/New_York');
+			$hojeDia = date('d');
+			$hojeHora = date('H:i');
+			if(($primeira === false) || ($hojeDia < $dataSplit[0] || ($hojeDia == $dataSplit[0] && $hojeHora < $dataSplit[2])))
+			{
+				$month = date('m');
+				if($primeira === false)
+					$month = $month+1;
+				$data = shape('dia' => $dataSplit[0], 'mes' => $month, 'ano' => date('Y'));
+				$horario = shape('hora' => explode(':', $dataSplit[2])[0], 'minuto' => explode(':', $dataSplit[2])[1]); 
+				var_dump($primeira);
+				return parent::convertTime($data, $horario, "America/New_York");
+			}
+		}
+		throw new Exception("Mês errado no topcoder");
+		$data = shape('dia' => 0, 'mes' => date('m'), 'ano' => date('Y'));
+		$horario = shape('hora' => 0, 'minuto' => 0); 
+		return tuple($data, $horario);
+	}
+	public function getDate() : (MinhaData, MeuHorario)
+	{
+		try{
+			return $this->getDateAux("http://www.topcoder.com/tc?d1=calendar&d2=thisMonth&module=Static", true);
+		}catch (Exception $e)
+		{
+			$html = file_get_html("http://www.topcoder.com/tc?d1=calendar&d2=thisMonth&module=Static");
+			$nextMonth = $html->find('strong')[0]->last_child()->href;
+			$nextMonth = str_replace("amp;", "", $nextMonth);
+			$link = "http://www.topcoder.com{$nextMonth}";
+			return $this->getDateAux($link, false);
+		}
+	}
+}
+
+$a = new RetrieverTopCoder();
 var_dump($a->getDate());
+
