@@ -5,14 +5,20 @@ newtype MeuHorario = shape('hora' => int, 'minuto' => int);
 
 include_once('../includes/xhp/init.php');
 include_once('../includes/simple_html_dom.php');
-include_once('../includes/structs.php');
 
-abstract class Retriever{
+abstract class Retriever
+{
 	abstract public function getDate() : (MinhaData, MeuHorario);
-	private function convertTime(MinhaData $dataOrigem, MeuHorario $horarioOrigem, int $timeZone) :(MinhaData, MeuHorario)
+
+	protected function convertTime(MinhaData $dataOrigem, MeuHorario $horarioOrigem, string $timeZone) :(MinhaData, MeuHorario)
 	{
-		$data = shape('dia' => 0, 'mes' => 0, 'ano' => 0);
-		$horario = shape('hora' => 0, 'minuto' => 0);
+		$dataString = "{$dataOrigem['ano']}-{$dataOrigem['mes']}-{$dataOrigem['dia']} {$horarioOrigem['hora']}:{$horarioOrigem['minuto']}:00";
+		$zonedData = new DateTime($dataString, new DateTimeZone($timeZone));
+		$zonedData->setTimezone(new DateTimeZone ('America/Sao_Paulo'));
+		$dataString = $zonedData->format('d-m-Y-H-i');
+		$dataSplit = explode('-', $dataString);
+		$data = shape('dia' => $dataSplit[0], 'mes' => $dataSplit[1], 'ano' => $dataSplit[2]);
+		$horario = shape('hora' => $dataSplit[3], 'minuto' => $dataSplit[4]);
 		return tuple($data, $horario);
 	}
 }
@@ -22,17 +28,17 @@ final class RetrieverCodeForces extends Retriever
 	public function getDate() : (MinhaData, MeuHorario)
 	{
 		$html = file_get_html("http://codeforces.com/contests");
-		$dateString = $html->find('tr[data-contestid]', 0)->find('a[href]', 0)->plaintext;
-		$dateString = trim($dateString);
-		$date = preg_split("@[:/ ]@", $dateString);
-		$date[0] = date('m', strtotime(date[0]));
-		$data = shape('dia' => date[1], 'mes' => date[0], 'ano' => date[2]);
-		$horario = shape('hora' => date[3], 'minuto' => date[4]);
+		$dataString = $html->find('tr[data-contestid]', 0)->find('a[href]', 0)->plaintext;
+		$dataString = trim($dataString);
+		$dataSplit = preg_split("@[:/ ]@", $dataString);
+		$dataSplit[0] = date('m', strtotime($dataSplit[0]));
+		$data = shape('dia' => $dataSplit[1], 'mes' => $dataSplit[0], 'ano' => $dataSplit[2]);
+		$horario = shape('hora' => $dataSplit[3], 'minuto' => $dataSplit[4]); 
 		var_dump($data);
-		var_dump($horario);
-		return tuple($data, $horario);
+		var_dump($data);
+		return parent::convertTime($data, $horario, "Europe/Moscow");
 	}
 }
 
 $a = new RetrieverCodeForces();
-$a->getDate();
+var_dump($a->getDate());
