@@ -62,10 +62,9 @@ final class RetrieverTopCoder extends Retriever
 				return parent::convertTime($data, $horario, "America/New_York");
 			}
 		}
-		throw new Exception("Mês errado no topcoder");
-		$data = shape('dia' => 0, 'mes' => date('m'), 'ano' => date('Y'));
-		$horario = shape('hora' => 0, 'minuto' => 0); 
-		return tuple($data, $horario);
+		if($primeira === false)
+			throw new Exception("Mês errado no TopCoder\n");
+		throw new Exception("Não conseguiu pegar data no TopCoder\n");
 	}
 	public function getDate() : (MinhaData, MeuHorario)
 	{
@@ -82,6 +81,32 @@ final class RetrieverTopCoder extends Retriever
 	}
 }
 
-$a = new RetrieverTopCoder();
-var_dump($a->getDate());
+final class RetrieverURI extends Retriever
+{	
+	public function getDate() : (MinhaData, MeuHorario)
+	{
+		$html = file_get_html("https://www.urionlinejudge.com.br/judge/en/contests");
+		$torneios = $html->find('div[id=table]', 0)->find('tr[class]');
+		$torneios = array_reverse($torneios);
+		date_default_timezone_set('America/Sao_Paulo');
+		foreach($torneios as $torneio)
+		{
+			if($torneio->children(1) != null && $torneio->children(1)->children(0)->alt == "Public")
+			{
+				$dataString = $torneio->children(3)->plaintext;
+				$dataSplit =  explode(' ', $dataString);
+				$dataSplit = preg_split("@[:/ ]@", $dataString);
 
+				if($dataSplit[2] >= date('Y') && $dataSplit[1] >= date('m') && ($dataSplit[0] > date('d') || 
+																				($dataSplit[0] == date('d') && ($dataSplit[3] >= date('H')))))
+				{
+					$data = shape('dia' => $dataSplit[0], 'mes' => $dataSplit[1], 'ano' => $dataSplit[2]);
+					$horario = shape('hora' => $dataSplit[3], 'minuto' => $dataSplit[4]); 
+					return tuple($data, $horario);
+				}
+			}
+		}
+		throw new Exception("Não conseguiu achar data no URI\n");
+	}
+
+}
