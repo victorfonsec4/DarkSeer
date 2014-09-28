@@ -8,17 +8,18 @@ class Face
 {
 	private function getUserToken():string
 	{
-		return "abc";
+		$myfile = fopen("token", "r");
+		
+		return fread($myfile,filesize("token"));
 	}
 	public function postToCodingContests(string $link, string $message) : void
 	{
 		FacebookSession::setDefaultApplication('1500260360223545', 'ca5882a5a5ce92ce25d474e5ab784dd1');
-		$session = new FacebookSession(getUserToken());
+		$session = new FacebookSession($this->getUserToken());
 		$request = new FacebookRequest($session, 'GET', '/me?fields=accounts');
 		$response = $request->execute();
 		$graphObject = $response->getGraphObject();
 		$pageAccessToken = $graphObject->getProperty('accounts')->getProperty('data')->getProperty('0')->getProperty('access_token');
-		var_dump($pageAccessToken);
 		$pageSessionn = new FacebookSession($pageAccessToken);
 		$msg = array('link' => $link,
 			'message' => $message);
