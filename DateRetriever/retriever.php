@@ -10,6 +10,14 @@ require_once $currentDir.'/../includes/simple_html_dom.php';
 abstract class Retriever
 {
 	abstract public function getDate() : (MinhaData, MeuHorario);
+	public string $nome;
+	public string $link;
+
+	public function __construct()
+	{
+		$this->nome = "abstrato";
+		$this->link = "abstrato.imaginario.bolacha";
+	}
 
 	protected function convertTime(MinhaData $dataOrigem, MeuHorario $horarioOrigem, string $timeZone) :(MinhaData, MeuHorario)
 	{
@@ -26,6 +34,12 @@ abstract class Retriever
 
 final class RetrieverCodeForces extends Retriever
 {
+	public function __construct()
+	{
+		parent::__construct();
+		$this->nome = "CodeForces";
+		$this->link = "http://codeforces.com/contests";
+	}
 	public function getDate() : (MinhaData, MeuHorario)
 	{
 		$html = file_get_html("http://codeforces.com/contests");
@@ -41,10 +55,15 @@ final class RetrieverCodeForces extends Retriever
 
 final class RetrieverTopCoder extends Retriever
 {
+	public function __construct()
+	{
+		parent::__construct();
+		$this->nome = "TopCoder";
+		$this->link = "http://www.topcoder.com/tc?d1=calendar&d2=thisMonth&module=Static";
+	}
 	protected function getDateAux(string $URL, bool $primeira) : (MinhaData, MeuHorario)
 	{
 		$html = file_get_html($URL);
-		var_dump($URL);
 		$srmDays = $html->find('table[class=calendar] div[class]');
 		foreach($srmDays as $day)
 		{
@@ -59,7 +78,6 @@ final class RetrieverTopCoder extends Retriever
 					$month = $month+1;
 				$data = shape('dia' => $dataSplit[0], 'mes' => $month, 'ano' => date('Y'));
 				$horario = shape('hora' => explode(':', $dataSplit[2])[0], 'minuto' => explode(':', $dataSplit[2])[1]); 
-				var_dump($primeira);
 				return parent::convertTime($data, $horario, "America/New_York");
 			}
 		}
@@ -84,6 +102,12 @@ final class RetrieverTopCoder extends Retriever
 
 final class RetrieverURI extends Retriever
 {	
+	public function __construct()
+	{
+		parent::__construct();
+		$this->nome = "URI";
+		$this->link = "https://www.urionlinejudge.com.br/judge/en/contests";
+	}
 	public function getDate() : (MinhaData, MeuHorario)
 	{
 		$html = file_get_html("https://www.urionlinejudge.com.br/judge/en/contests");
@@ -97,9 +121,10 @@ final class RetrieverURI extends Retriever
 				$dataString = $torneio->children(3)->plaintext;
 				$dataSplit =  explode(' ', $dataString);
 				$dataSplit = preg_split("@[:/ ]@", $dataString);
-
-				if($dataSplit[2] >= date('Y') && $dataSplit[1] >= date('m') && ($dataSplit[0] > date('d') || 
-																				($dataSplit[0] == date('d') && ($dataSplit[3] >= date('H')))))
+				//var_dump($dataSplit);
+				if($dataSplit[2] > date('Y') || ($dataSplit[2] == date('Y') && $dataSplit[1] > date('m')) || 
+												(($dataSplit[2] == date('Y') && $dataSplit[1] == date('m') && $dataSplit[0] > date('d')) || 
+												($dataSplit[0] == date('d') && ($dataSplit[3] >= date('H')))))
 				{
 					$data = shape('dia' => $dataSplit[0], 'mes' => $dataSplit[1], 'ano' => $dataSplit[2]);
 					$horario = shape('hora' => $dataSplit[3], 'minuto' => $dataSplit[4]); 

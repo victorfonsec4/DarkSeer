@@ -1,6 +1,6 @@
 <?hh
-$currentDir = dirname(__FILE__); 
-require_once $currentDir.'/../includes/facebook/autoload.php';
+$dirFace = dirname(__FILE__); 
+require_once $dirFace.'/../includes/facebook/autoload.php';
 use Facebook\FacebookSession;
 use Facebook\FacebookRequest;
 
@@ -8,9 +8,11 @@ class Face
 {
 	private function getUserToken():string
 	{
-		$myfile = fopen("token", "r");
+		$dir = dirName(__FILE__);
+		$myfile = fopen("{$dir}/token", "r");
+		$token = fread($myfile,filesize("{$dir}/token"));
 		
-		return fread($myfile,filesize("token"));
+		return $token;
 	}
 	public function postToCodingContests(string $link, string $message) : void
 	{
