@@ -23,7 +23,6 @@ class Face
 		$graphObject = $response->getGraphObject();
 		$pageAccessToken = $graphObject->getProperty('accounts')->getProperty('data')->getProperty('0')->getProperty('access_token');
 		$pageSessionn = new FacebookSession($pageAccessToken);
-		var_dump($link);
 		$msg = array('link' => $link,
 			'message' => $message);
 		$request = new FacebookRequest($pageSessionn, 'POST', '/me/feed', $msg);
