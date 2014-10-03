@@ -8,9 +8,9 @@ class Face
 {
 	private function getUserToken():string
 	{
-		$dir = dirName(__FILE__);
-		$myfile = fopen("{$dir}/token", "r");
-		$token = fread($myfile,filesize("{$dir}/token"));
+		$dirFace = dirName(__FILE__);
+		$myfile = fopen("{$dirFace}/token", "r");
+		$token = fread($myfile,filesize("{$dirFace}/token"));
 		
 		return $token;
 	}
