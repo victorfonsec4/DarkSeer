@@ -59,7 +59,7 @@ final class RetrieverTopCoder extends Retriever
 	{
 		parent::__construct();
 		$this->nome = "TopCoder";
-		$this->link = "http://www.topcoder.com/tc?d1=calendar&d2=thisMonth&module=Static/";
+		$this->link = "http://www.topcoder.com/tc?d1=calendar&d2=thisMonth&module=Static";
 	}
 	protected function getDateAux(string $URL, bool $primeira) : (MinhaData, MeuHorario)
 	{
