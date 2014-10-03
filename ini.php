@@ -27,6 +27,6 @@ foreach($sites as $site)
 		}
 	}catch (Exception $e)
 	{
-		error_log("Unable to find date for {$site->nome}!");
+		error_log(var_dump($e->getMessage()));
 	}	
 }

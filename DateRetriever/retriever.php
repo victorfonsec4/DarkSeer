@@ -38,7 +38,7 @@ final class RetrieverCodeForces extends Retriever
 	{
 		parent::__construct();
 		$this->nome = "CodeForces";
-		$this->link = "http://codeforces.com/contests";
+		$this->link = "http://www.codeforces.com/contests/";
 	}
 	public function getDate() : (MinhaData, MeuHorario)
 	{
@@ -59,7 +59,7 @@ final class RetrieverTopCoder extends Retriever
 	{
 		parent::__construct();
 		$this->nome = "TopCoder";
-		$this->link = "http://www.topcoder.com/tc?d1=calendar&d2=thisMonth&module=Static";
+		$this->link = "http://www.topcoder.com/tc?d1=calendar&d2=thisMonth&module=Static/";
 	}
 	protected function getDateAux(string $URL, bool $primeira) : (MinhaData, MeuHorario)
 	{
@@ -106,7 +106,7 @@ final class RetrieverURI extends Retriever
 	{
 		parent::__construct();
 		$this->nome = "URI";
-		$this->link = "https://www.urionlinejudge.com.br/judge/en/contests";
+		$this->link = "http://www.urionlinejudge.com.br/judge/en/contests/";
 	}
 	public function getDate() : (MinhaData, MeuHorario)
 	{
@@ -121,7 +121,6 @@ final class RetrieverURI extends Retriever
 				$dataString = $torneio->children(3)->plaintext;
 				$dataSplit =  explode(' ', $dataString);
 				$dataSplit = preg_split("@[:/ ]@", $dataString);
-				//var_dump($dataSplit);
 				if($dataSplit[2] > date('Y') || ($dataSplit[2] == date('Y') && $dataSplit[1] > date('m')) || 
 												(($dataSplit[2] == date('Y') && $dataSplit[1] == date('m') && $dataSplit[0] > date('d')) || 
 												($dataSplit[0] == date('d') && ($dataSplit[3] >= date('H')))))
@@ -134,5 +133,4 @@ final class RetrieverURI extends Retriever
 		}
 		throw new Exception("Não conseguiu achar data no URI\n");
 	}
-
 }

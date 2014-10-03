@@ -14,7 +14,7 @@ class Face
 		
 		return $token;
 	}
-	public function postToCodingContests(string $link, string $message) : void
+	public function postToCodingContests(string $message, string $link) : void
 	{
 		FacebookSession::setDefaultApplication('1500260360223545', '***REMOVED***');
 		$session = new FacebookSession($this->getUserToken());
@@ -23,6 +23,7 @@ class Face
 		$graphObject = $response->getGraphObject();
 		$pageAccessToken = $graphObject->getProperty('accounts')->getProperty('data')->getProperty('0')->getProperty('access_token');
 		$pageSessionn = new FacebookSession($pageAccessToken);
+		var_dump($link);
 		$msg = array('link' => $link,
 			'message' => $message);
 		$request = new FacebookRequest($pageSessionn, 'POST', '/me/feed', $msg);
