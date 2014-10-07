@@ -121,9 +121,10 @@ final class RetrieverURI extends Retriever
 				$dataString = $torneio->children(3)->plaintext;
 				$dataSplit =  explode(' ', $dataString);
 				$dataSplit = preg_split("@[:/ ]@", $dataString);
+
 				if($dataSplit[2] > date('Y') || ($dataSplit[2] == date('Y') && $dataSplit[1] > date('m')) || 
-												(($dataSplit[2] == date('Y') && $dataSplit[1] == date('m') && $dataSplit[0] > date('d')) || 
-												($dataSplit[0] == date('d') && ($dataSplit[3] >= date('H')))))
+												(($dataSplit[2] == date('Y') && $dataSplit[1] == date('m') && ($dataSplit[0] > date('d') || 
+												($dataSplit[0] == date('d') && ($dataSplit[3] >= date('H')))))))
 				{
 					$data = shape('dia' => $dataSplit[0], 'mes' => $dataSplit[1], 'ano' => $dataSplit[2]);
 					$horario = shape('hora' => $dataSplit[3], 'minuto' => $dataSplit[4]); 
