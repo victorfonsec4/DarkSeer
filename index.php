@@ -1,12 +1,12 @@
-<?hh 
+<?hh
 
-$currentDir = dirname(__FILE__); 
-require_once $currentDir.'/includes/xhp/init.php';
+$currentDir = dirname(__FILE__);
+//require_once $currentDir.'/includes/xhp/init.php';
 require_once $currentDir.'/DateRetriever/retriever.php';
 
 $bsPad = "body {\npadding-top: 60px;\n}";
 $html5Mark = "<!DOCTYPE html>";
-$html = 
+$html =
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
@@ -43,7 +43,7 @@ $html =
       <h1>Bootstrap starter template</h1>
       <p>Use this document as a way to quick start any new project.<br/> All you get is this message and a barebones HTML document.</p>
 
-    </div> 
+    </div>
 
 	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
   	<script src="includes/bootstrap/js/html5shiv.js"></script>
