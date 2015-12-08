@@ -56,8 +56,8 @@ final class RetrieverTopCoder extends Retriever
         $client = new Google_Client();
         $client->setApplicationName("DarkSeer");
 
-        $token = file_get_contents("{$current_dir}/google_token");
-        $client->setDeveloperKey($token);
+        $token = file_get_contents("./google_token");
+        $client->setDeveloperKey();
 
         $service = new Google_Service_Calendar($client);
 
