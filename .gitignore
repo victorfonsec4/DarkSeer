@@ -3,3 +3,5 @@ log/
 *.o
 *.swo
 facePost/token
+vendor/
+DateRetriever/google_token
