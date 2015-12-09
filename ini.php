@@ -8,7 +8,7 @@ $codeForces = new RetrieverCodeForces();
 $topCoder = new RetrieverTopCoder();
 //$uri = new RetrieverURI();
 $face = new Face();
-$sites = array($codeForces);
+$sites = array($codeForces, $topCoder);
 
 foreach($sites as $site)
 {
@@ -30,7 +30,6 @@ https://www.timeanddate.com/worldclock/fixedtime.html?hour={$contest_time->forma
 
         $face->postToCodingContests($menssagem, $site->link);
     }
-
     if($contest_time > $current_time && $contest_time <= $tomorrow_time) {
         $menssagem = "There's a {$site->nome} contest today!\nCoding Starts at {$contest_time->format('H:i')} UTC!\n
 https://www.timeanddate.com/worldclock/fixedtime.html?hour={$contest_time->format('H')}&min={$contest_time->format('i')}&day={$contest_time->format('d')}&month={$contest_time->format('m')}&year={$contest_time->format('Y')}";
