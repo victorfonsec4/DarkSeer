@@ -30,7 +30,9 @@ final class RetrieverCodeForces extends Retriever
 	public function getDate() : DateTime
 	{
 		$html = file_get_html("http://codeforces.com/contests");
-		$dataString = $html->find('tr[data-contestid]', 0)->find('a[href]', 0)->plaintext;
+		$dataString = $html
+                    ->find('tr[data-contestid]', 0)
+                    ->find('a[href]', 0)->plaintext;
 		$dataString = trim($dataString);
         $dataString = str_replace("/", " ", $dataString);
 
@@ -64,13 +66,17 @@ final class RetrieverTopCoder extends Retriever
         $service = new Google_Service_Calendar($client);
 
         $optParams = array('q' => 'srm -registration');
-        $events = $service->events->listEvents('appirio.com_bhga3musitat85mhdrng9035jg@group.calendar.google.com');
+        $calendar_id =
+            'appirio.com_bhga3musitat85mhdrng9035jg@group.calendar.google.com';
+        $events = $service->events
+                ->listEvents($calendar_id);
         $items = $events['modelData']['items'];
 
         date_default_timezone_set('America/New_York');
         $current_time = new DateTime(date('Y-m-d\TH:i:sP'));
 
-        $next_contest_time = new DateTime(date('Y-m-d\TH:i:sP', strtotime('+1 year')));
+        $next_contest_time =
+            new DateTime(date('Y-m-d\TH:i:sP', strtotime('+1 year')));
         $next_contest_name = CONTEST_NOT_FOUND;
 
         foreach ($items as $item) {
