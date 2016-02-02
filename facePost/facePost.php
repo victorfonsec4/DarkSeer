@@ -15,7 +15,7 @@ class Face
 	}
 	public function postToCodingContests(string $message, string $link) : void
 	{
-		FacebookSession::setDefaultApplication('1500260360223545', '***REMOVED***');
+		FacebookSession::setDefaultApplication('1500260360223545', 'page-secret-here');
 		$pageAccessToken = $this->getPageToken();
 		$pageSessionn = new FacebookSession($pageAccessToken);
 		$msg = array('link' => $link,
